@@ -1,4 +1,4 @@
-/*******************************************************************************
+/******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
  * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -112,7 +112,8 @@ class CustomGestureDetector {
         final int action = ev.getAction();
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                mActivePointerId = ev.getPointerId(0);
+
+                mActivePointerId = ev.findPointerIndex(0);
 
                 mVelocityTracker = VelocityTracker.obtain();
                 if (null != mVelocityTracker) {
@@ -182,8 +183,9 @@ class CustomGestureDetector {
                 }
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                final int pointerIndex = Util.getPointerIndex(ev.getAction());
-                final int pointerId = ev.getPointerId(pointerIndex);
+                final int pointerIndex = (action & MotionEvent.ACTION_POINTER_INDEX_MASK)
+                        >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                final int pointerId = ev.findPointerIndex(pointerIndex);
                 if (pointerId == mActivePointerId) {
                     // This was our active pointer going up. Choose a new
                     // active pointer and adjust accordingly.
